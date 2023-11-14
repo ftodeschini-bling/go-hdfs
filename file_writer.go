@@ -61,7 +61,7 @@ func (c *Client) Create(name string) (*FileWriter, error) {
 // to it. Because of the way that HDFS writes are buffered and acknowledged
 // asynchronously, it is very important that Close is called after all data has
 // been written.
-func (c *Client) Create(name string, createParentDir bool) (*FileWriter, error) {
+func (c *Client) Create2(name string, createParentDir bool) (*FileWriter, error) {
 	_, err := c.getFileInfo(name)
 	err = interpretException(err)
 	if err == nil {
@@ -77,7 +77,7 @@ func (c *Client) Create(name string, createParentDir bool) (*FileWriter, error) 
 
 	replication := int(defaults.GetReplication())
 	blockSize := int64(defaults.GetBlockSize())
-	return c.CreateFile(name, replication, blockSize, 0644, createParentDir)
+	return c.CreateFile2(name, replication, blockSize, 0644, createParentDir)
 }
 
 // CreateFile opens a new file in HDFS with the given replication, block size,
@@ -113,7 +113,7 @@ func (c *Client) CreateFile(name string, replication int, blockSize int64, perm 
 // permissions and createParent directory (true/false), and returns an io.WriteCloser for writing to it. Because of
 // the way that HDFS writes are buffered and acknowledged asynchronously, it is
 // very important that Close is called after all data has been written.
-func (c *Client) CreateFile(name string, replication int, blockSize int64, perm os.FileMode, createParentDir bool) (*FileWriter, error) {
+func (c *Client) CreateFile2(name string, replication int, blockSize int64, perm os.FileMode, createParentDir bool) (*FileWriter, error) {
 	createReq := &hdfs.CreateRequestProto{
 		Src:          proto.String(name),
 		Masked:       &hdfs.FsPermissionProto{Perm: proto.Uint32(uint32(perm))},
